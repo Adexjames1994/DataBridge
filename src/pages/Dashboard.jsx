@@ -1,78 +1,3 @@
-// import { useState } from "react";
-// import { userData } from "../data/dummyData";
-// import ConsentModal from "../components/ConsentModal";
-
-// export default function Dashboard() {
-//   const [showConsent, setShowConsent] = useState(!userData.consentGiven);
-
-//   const totalBalance = userData.accounts.reduce(
-//     (sum, acc) => sum + (acc.balance || 0),
-//     0
-//   );
-//   const totalSavings = userData.accounts.reduce(
-//     (sum, acc) => sum + (acc.savings || 0),
-//     0
-//   );
-
-//   const totalSpending = userData.accounts
-//     .flatMap((acc) => acc.transactions || [])
-//     .reduce((sum, tx) => sum + tx.amount, 0);
-
-//   const creditScore = Math.min(
-//     850,
-//     300 + Math.floor((userData.accounts.length * totalSavings) / totalSpending)
-//   );
-
-//   return (
-//     <div className="p-8 bg-gray-100 min-h-screen">
-//       <h2 className="text-3xl font-bold mb-6">Welcome, {userData.name}</h2>
-
-//       {showConsent && <ConsentModal onClose={() => setShowConsent(false)} />}
-
-//       <div className="grid md:grid-cols-3 gap-6">
-//         <div className="bg-white p-4 rounded shadow">
-//           <h3 className="font-semibold text-gray-700 mb-2">Total Balance</h3>
-//           <p className="text-2xl text-green-600">${totalBalance}</p>
-//         </div>
-
-//         <div className="bg-white p-4 rounded shadow">
-//           <h3 className="font-semibold text-gray-700 mb-2">Total Savings</h3>
-//           <p className="text-2xl text-blue-600">${totalSavings}</p>
-//         </div>
-
-//         <div className="bg-white p-4 rounded shadow">
-//           <h3 className="font-semibold text-gray-700 mb-2">Credit Score</h3>
-//           <p className="text-2xl text-purple-600">{creditScore}</p>
-//         </div>
-//       </div>
-
-//       <div className="mt-8 bg-white p-6 rounded shadow">
-//         <h3 className="text-xl font-semibold mb-4">Spending Insights</h3>
-//         <ul className="space-y-2">
-//           {userData.accounts.flatMap((acc) =>
-//             (acc.transactions || []).map((tx, i) => (
-//               <li
-//                 key={`${acc.bankName}-${i}`}
-//                 className="flex justify-between border-b py-1 text-sm"
-//               >
-//                 <span>
-//                   {tx.category} ({acc.bankName})
-//                 </span>
-//                 <span>${tx.amount}</span>
-//               </li>
-//             ))
-//           )}
-//         </ul>
-//       </div>
-
-//       <div className="mt-6 text-sm text-gray-600">
-//         💡 <strong>Tip:</strong> Try saving at least 10% of your income every
-//         month to boost your credit score.
-//       </div>
-//     </div>
-//   );
-// }
-
 import { useState } from "react";
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
@@ -89,9 +14,7 @@ import {
   TrendingUp,
   AlertCircle,
   CheckCircle,
-  Lightbulb,
   Shield,
-  Plus,
 } from "lucide-react";
 
 import {
@@ -127,56 +50,66 @@ export function Dashboard({ user, onLogout }) {
     .reduce((sum, t) => sum + t.amount, 0);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* Header */}
       <header className="bg-white border-b sticky top-0 z-10">
         <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            {/* Logo Section */}
+            <div className="flex items-center gap-2">
               <Shield className="w-6 h-6 text-blue-600" />
-              <span className="text-xl text-gray-900">Open Banking Hub</span>
+              <span className="text-lg sm:text-xl font-semibold text-gray-900">
+                Open Banking Hub
+              </span>
             </div>
 
-            <div className="flex items-center gap-4">
-              <div className="text-right">
-                <p className="text-sm text-gray-900">{user.name}</p>
+            {/* User Actions */}
+            <div className="flex flex-wrap items-center gap-3 sm:gap-4">
+              <div className="hidden sm:block text-right">
+                <p className="text-sm font-medium text-gray-900">{user.name}</p>
                 <p className="text-xs text-gray-500">{user.email}</p>
               </div>
               <Button
                 variant="outline"
                 size="icon"
                 onClick={() => setShowConsentModal(true)}
+                className="sm:w-9 sm:h-9"
               >
                 <Settings className="w-4 h-4" />
               </Button>
-              <Button variant="outline" onClick={onLogout}>
-                <LogOut className="w-4 h-4 mr-2" />
-                Logout
+              <Button
+                variant="outline"
+                onClick={onLogout}
+                className="flex items-center gap-1 text-sm sm:text-base"
+              >
+                <LogOut className="w-4 h-4 sm:mr-2" />
+                <span className="hidden sm:inline">Logout</span>
               </Button>
             </div>
           </div>
         </div>
       </header>
 
-      <div className="container mx-auto px-4 py-8">
+      {/* Main Content */}
+      <main className="flex-1 container mx-auto px-4 py-6 sm:py-8">
         {/* Welcome Banner */}
-        <div className="mb-8">
-          <h1 className="text-3xl text-gray-900 mb-2">
+        <div className="mb-6 sm:mb-8 text-center sm:text-left">
+          <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900 mb-1">
             Welcome back, {user.name.split(" ")[0]}!
           </h1>
-          <p className="text-gray-600">
-            Here's your financial overview for October 2025
+          <p className="text-gray-600 text-sm sm:text-base">
+            Here’s your financial overview for October 2025
           </p>
         </div>
 
         {/* Consent Status */}
-        {!consents && (
+        {!consents ? (
           <Card className="p-4 mb-6 bg-blue-50 border-blue-200">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div className="flex items-center gap-3">
                 <AlertCircle className="w-5 h-5 text-blue-600" />
                 <div>
-                  <p className="text-sm text-gray-900">
+                  <p className="text-sm text-gray-900 font-medium">
                     Grant data access to unlock all features
                   </p>
                   <p className="text-xs text-gray-600">
@@ -189,14 +122,14 @@ export function Dashboard({ user, onLogout }) {
               </Button>
             </div>
           </Card>
-        )}
-
-        {consents && (
+        ) : (
           <Card className="p-4 mb-6 bg-green-50 border-green-200">
             <div className="flex items-center gap-3">
               <CheckCircle className="w-5 h-5 text-green-600" />
               <div>
-                <p className="text-sm text-gray-900">All systems active</p>
+                <p className="text-sm text-gray-900 font-medium">
+                  All systems active
+                </p>
                 <p className="text-xs text-gray-600">
                   Your data permissions are up to date
                 </p>
@@ -206,13 +139,13 @@ export function Dashboard({ user, onLogout }) {
         )}
 
         {/* Quick Stats */}
-        <div className="grid md:grid-cols-3 gap-6 mb-8">
-          <Card className="p-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-8">
+          <Card className="p-5 sm:p-6">
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm text-gray-600">Total Balance</span>
               <Wallet className="w-5 h-5 text-blue-600" />
             </div>
-            <p className="text-3xl text-gray-900">
+            <p className="text-2xl sm:text-3xl font-semibold text-gray-900">
               $
               {totalBalance.toLocaleString("en-US", {
                 minimumFractionDigits: 2,
@@ -224,12 +157,12 @@ export function Dashboard({ user, onLogout }) {
             </p>
           </Card>
 
-          <Card className="p-6">
+          <Card className="p-5 sm:p-6">
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm text-gray-600">Monthly Income</span>
               <TrendingUp className="w-5 h-5 text-green-600" />
             </div>
-            <p className="text-3xl text-gray-900">
+            <p className="text-2xl sm:text-3xl font-semibold text-gray-900">
               $
               {totalIncome.toLocaleString("en-US", {
                 minimumFractionDigits: 2,
@@ -239,12 +172,12 @@ export function Dashboard({ user, onLogout }) {
             <p className="text-xs text-gray-600 mt-1">Last 30 days</p>
           </Card>
 
-          <Card className="p-6">
+          <Card className="p-5 sm:p-6">
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm text-gray-600">Monthly Spending</span>
               <AlertCircle className="w-5 h-5 text-orange-600" />
             </div>
-            <p className="text-3xl text-gray-900">
+            <p className="text-2xl sm:text-3xl font-semibold text-gray-900">
               $
               {totalSpending.toLocaleString("en-US", {
                 minimumFractionDigits: 2,
@@ -255,23 +188,28 @@ export function Dashboard({ user, onLogout }) {
           </Card>
         </div>
 
-        {/* Main Content Tabs */}
+        {/* Tabs */}
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList>
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="insights">Insights</TabsTrigger>
-            <TabsTrigger value="credit">Credit Score</TabsTrigger>
+          <TabsList className="flex flex-wrap gap-2 sm:gap-4 overflow-x-auto">
+            <TabsTrigger value="overview" className="flex-1 sm:flex-none">
+              Overview
+            </TabsTrigger>
+            <TabsTrigger value="insights" className="flex-1 sm:flex-none">
+              Insights
+            </TabsTrigger>
+            <TabsTrigger value="credit" className="flex-1 sm:flex-none">
+              Credit Score
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview" className="space-y-6">
-            <div className="grid lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <AccountsOverview accounts={mockBankAccounts} />
               <SpendingInsights
                 categories={mockSpendingCategories}
                 totalSpending={totalSpending}
               />
             </div>
-
             <ActionableInsights insights={mockInsights} />
           </TabsContent>
 
@@ -291,7 +229,7 @@ export function Dashboard({ user, onLogout }) {
             />
           </TabsContent>
         </Tabs>
-      </div>
+      </main>
 
       <ConsentModal
         open={showConsentModal}
